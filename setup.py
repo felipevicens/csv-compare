@@ -18,7 +18,7 @@ from setuptools import setup, find_packages
 
 _description = 'Tool for comparing csv files between 2 folders'
 
-setup(name='csv-compare',
+setup(name='csv_compare',
       license='Apache License, Version 2.0',
       version='0.1',
       url='https://github.com/felipevicens/csv-compare',
@@ -26,6 +26,7 @@ setup(name='csv-compare',
       author_email='fjvicens@edgecloudlabs.com',
       description=_description,
       include_package_data=True,
+      packages=find_packages(),
       install_requires=['Click', 'colorama'],
       entry_points="""
           [console_scripts]
