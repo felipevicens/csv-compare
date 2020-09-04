@@ -152,7 +152,12 @@ def cli(process, old, new, ui, clean):
         return convert_excel_csv(filename)
     
     if process == 'folder':
-        missing_sheets, different_sheets = folder_process(old, new, ui, clean)
+        try:
+            missing_sheets, different_sheets = folder_process(old, new, ui, clean)
+        except Exception as e:
+            print(f"ERROR: {e}")
+            exit(1)
+
     elif process == 'file':
         try:
             csv_old = file_process(old)
@@ -160,6 +165,8 @@ def cli(process, old, new, ui, clean):
             missing_sheets, different_sheets = folder_process(csv_old, csv_new, ui, clean)
         except Exception as e:
             print(f"ERROR: {e}")
+            clean_temp([f"/tmp/{old}", f"/tmp/{new}"])
+            exit(1)
         finally:
             clean_temp([f"/tmp/{old}", f"/tmp/{new}"])
     else:

@@ -36,5 +36,7 @@ def clean_temp(directories):
     for directory in directories:
         try:
             shutil.rmtree(directory)
+        except OSError as e:
+            pass
         except Exception as e:
             print(f"ERROR: {e}")
