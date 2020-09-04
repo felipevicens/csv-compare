@@ -72,7 +72,7 @@ You will need first to generate a folder with the CSVs files per excel book. The
   End Sub
 ```
 
-1. Press F5 to execute the code. It Takes some time. You can grab a coffe :)
+1. Press F5 to execute the code. It Takes some time. You can grab a coffee :coffee: :)
 1. The files will be generated in the Spreadsheet saved folder.
 
 Having the two folders with the csv files to compare, you can run the command:
