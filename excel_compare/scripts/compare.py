@@ -50,12 +50,12 @@ except ImportError:  # fallback so that the imported classes always exist
     Fore = Back = Style = ColorFallback()
 
 @click.command()
-@click.option('--process', default='folder')
+@click.option('--process', default='file', help='By "file" or "folder"')
 @click.option('--ui', default=False, is_flag=True, help="[OPTIONAL] Use tkdiff for visual comparison. Requires tkdiff installation in the OS")
 @click.option('--clean', default=False, is_flag=True, help="[OPTIONAL] Skip the context around the change")
-@click.argument('folder_old')
-@click.argument('folder_new')
-def cli(process, folder_old, folder_new, ui, clean):
+@click.argument('old')
+@click.argument('new')
+def cli(process, old, new, ui, clean):
     """
         Excel Workbook row-by-row comparison.
         
@@ -108,38 +108,38 @@ def cli(process, folder_old, folder_new, ui, clean):
                 hash_md5.update(chunk)
         return hash_md5.hexdigest()
 
-    def folder_process(folder_old, folder_new, ui, clean):
+    def folder_process(old, new, ui, clean):
         missing_sheets = []
-        files_folder_old = [f for f in listdir(folder_old) if isfile(join(folder_old, f))]
-        files_folder_new = [f for f in listdir(folder_new) if isfile(join(folder_new, f))]
+        files_old = [f for f in listdir(old) if isfile(join(old, f))]
+        files_new = [f for f in listdir(new) if isfile(join(new, f))]
 
-        if set(files_folder_old).difference(set(files_folder_new)) != set():
-            missing_sheets = list(set(files_folder_old).difference(set(files_folder_new)))
+        if set(files_old).difference(set(files_new)) != set():
+            missing_sheets = list(set(files_old).difference(set(files_new)))
 
         # Main
         # Checking the files located in old folder against files in new_folder
 
-        for file_folder in files_folder_old:
-            if file_folder in files_folder_new:
-                if md5(f"{folder_old}/{file_folder}") == md5(f"{folder_new}/{file_folder}"):
+        for file_folder in files_old:
+            if file_folder in files_new:
+                if md5(f"{old}/{file_folder}") == md5(f"{new}/{file_folder}"):
                     print(f"{Fore.MAGENTA}[NO_CHANGES]:{Fore.RESET} {file_folder}")
                 else:
                     print(f"{Fore.YELLOW}[DIFFERENT]:{Fore.RESET} {file_folder}")
-                    with open(f"{folder_old}/{file_folder}", encoding="UTF-8", errors="ignore") as f_old:
+                    with open(f"{old}/{file_folder}", encoding="UTF-8", errors="ignore") as f_old:
                         f_old_text = f_old.readlines()
-                    with open(f"{folder_new}/{file_folder}", encoding="UTF-8", errors="ignore") as f_new:
+                    with open(f"{new}/{file_folder}", encoding="UTF-8", errors="ignore") as f_new:
                         f_new_text = f_new.readlines()
                     
                     # Calculate the differences
                     if ui == True:
                         try:
-                            subprocess.run(["/usr/bin/tkdiff", f'{folder_old}/{file_folder}', f'{folder_new}/{file_folder}'])
+                            subprocess.run(["/usr/bin/tkdiff", f'{old}/{file_folder}', f'{new}/{file_folder}'])
                         except Exception as e:
                             print(f"\n{Fore.RED}ERROR: {e}\n{Fore.YELLOW}This option is only valid for linux and requires tkdiff. Please install tkdiff by:{Fore.RESET}\n\nsudo apt-get install tkdiff\n")
                             exit(1)
 
                     else:
-                        diff = difflib.unified_diff(f_old_text, f_new_text, fromfile=f"{folder_old}/{file_folder}", tofile=f"{folder_new}/{file_folder}", lineterm='')
+                        diff = difflib.unified_diff(f_old_text, f_new_text, fromfile=f"{old}/{file_folder}", tofile=f"{new}/{file_folder}", lineterm='')
                         diff = color_diff(diff, clean)
                         print('\n'.join(diff))
 
@@ -152,16 +152,16 @@ def cli(process, folder_old, folder_new, ui, clean):
         return convert_excel_csv(filename)
     
     if process == 'folder':
-        missing_sheets, different_sheets = folder_process(folder_old, folder_new, ui, clean)
+        missing_sheets, different_sheets = folder_process(old, new, ui, clean)
     elif process == 'file':
         try:
-            csv_folder_old = file_process(folder_old)
-            csv_folder_new = file_process(folder_new)
-            missing_sheets, different_sheets = folder_process(csv_folder_old, csv_folder_new, ui, clean)
+            csv_old = file_process(old)
+            csv_new = file_process(new)
+            missing_sheets, different_sheets = folder_process(csv_old, csv_new, ui, clean)
         except Exception as e:
             print(f"ERROR: {e}")
         finally:
-            clean_temp([f"/tmp/{folder_old}", f"/tmp/{folder_new}"])
+            clean_temp([f"/tmp/{old}", f"/tmp/{new}"])
     else:
         print(f"option -p or --process must be file or folder. Used: {process}")
 
