@@ -16,20 +16,20 @@
 
 from setuptools import setup, find_packages
 
-_description = 'Tool for comparing csv files between 2 folders'
+_description = 'Tool for comparing excel workbooks'
 
-setup(name='csv_compare',
+setup(name='excel_compare',
       license='Apache License, Version 2.0',
-      version='0.1',
-      url='https://github.com/felipevicens/csv-compare',
+      version='0.2',
+      url='https://github.com/felipevicens/excel-compare',
       author='Felipe Vicens',
       author_email='fjvicens@edgecloudlabs.com',
       description=_description,
       include_package_data=True,
       packages=find_packages(),
-      install_requires=['Click', 'colorama'],
+      install_requires=['Click', 'colorama', 'pandas'],
       entry_points="""
           [console_scripts]
-          csv-compare=csv_compare.scripts.compare:cli
+          excel-compare=excel_compare.scripts.compare:cli
           """,
       )
