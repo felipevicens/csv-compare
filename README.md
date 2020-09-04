@@ -1,24 +1,46 @@
-Tool for comparing csv files between 2 folders
+# Excel Workbook row-by-row comparison
 
-# Requirements
+Tool for comparing excel workbooks
+
+## Requirements
 
 * Python3
 * colorama
 * Click
+* pandas
 
-# Installation
+For ui visualisation is required `tkdiff`.
+
+## Installation
 
 You can install directly from github with the following command:
 
 ```bash
-pip3 install git+https://github.com/felipevicens/csv-compare.git
+pip3 install git+https://github.com/felipevicens/excel-compare.git
 ```
 
-# How to use it
+## How to use it
 
 Sometimes you need to compare 2 versions of the Excel file where someone made an small change and you can't see where was made. If the excel file have lot of sheets the difficulty is high.
 
 Having that, the suggested procedure is to convert the excel book in a splitted csv files per version (Old and New) and try to compare both to find where are the changes.
+
+There are two ways for doing the comparison
+
+### Automatic CSV generation from workbook
+
+By this option you only need to specify the location of the Excel files to be processed.
+
+```
+excel-compare --process <FILE_OLD> <FILE_NEW>
+```
+
+Optional:
+* To use the visual comparator you can set the option --ui
+* To not print the wrapping text around the changes you can use --clean
+
+
+### Manual CSV generation from Workbook
 
 You will need first to generate a folder with the CSVs files per excel book. The procedure is automated using the following steps:
 
@@ -56,15 +78,19 @@ You will need first to generate a folder with the CSVs files per excel book. The
 Having the two folders with the csv files to compare, you can run the command:
 
 ```bash
-csv-compare <FOLDER_OLD> <FOLDER_NEW>
+excel-compare <FOLDER_OLD> <FOLDER_NEW>
 ```
 
 To print the help:
 
 ```bash
-csv-compare --help
+excel-compare --help
 ```
 
-# Author
+## Bugs
+
+Please open an Issue :)
+
+## Author
 
 Felipe Vicens <fjvicens@edgecloudlabs.com>
